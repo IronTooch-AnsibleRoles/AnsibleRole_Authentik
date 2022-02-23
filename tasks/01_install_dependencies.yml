@@ -5,11 +5,4 @@
       - acl
       - sudo
       - python3-pexpect
-      - python3-pip
     state: present
-
-- name: Install Docker Pip  # Needed for Ansible control of Docker containers
-  ansible.builtin.pip:
-    state: present
-    name:
-      - docker-compose

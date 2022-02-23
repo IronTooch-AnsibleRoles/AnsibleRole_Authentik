@@ -1,5 +1,5 @@
 ---
-# tasks file for zz_app
+# tasks file for cd_authentik
 - name: Install dependencies
   ansible.builtin.include_tasks:
     file: "01_install_dependencies.yml"
@@ -8,14 +8,21 @@
   ansible.builtin.include_tasks:
     file: "02_create_serviceuser.yml"
 
-- name: Download and Install my_app
-  ansible.builtin.include_tasks:
-    file: "03_install_app.yml"
-
 - name: Configure Environment
   ansible.builtin.include_tasks:
-    file: "04_configure_app.yml"
+    file: "03_configure_app.yml"
+
+- name: Download and Install Authentik
+  ansible.builtin.include_tasks:
+    file: "04_install_app.yml"
 
 - name: Deploy Services and Handle SSL
   ansible.builtin.include_tasks:
     file: "05_deploy_services.yml"
+
+- name: Print completion message
+  ansible.builtin.debug:
+    msg:
+      - "Congrats! Authentik is installed at http://{{ ansible_default_ipv4.address }}/if/flow/initial-setup/"
+      - "Default user is akadmin"
+    verbosity: 0

@@ -54,7 +54,7 @@ Example Playbooks
     - role: 'irontooch.authentik'
       vars:
         authentik_smtp_username: "my_email_address@gmail.com"
-        authentik_smtp_password: "my_secret_password"
+        authentik_smtp_password: "my_secret_password1234"
         authentik_admin_user_email: "authentik@my_personal_domain.com"
 ```
 
@@ -62,7 +62,7 @@ Example Playbooks
 # Deploy Authentik and set Postgres Db Information
     - role: 'irontooch.authentik'
       vars:
-        authentik_pgpass: "my_db_password"
+        authentik_pgpass: "my_db_password1234
 ```
 
 License
@@ -73,4 +73,4 @@ GPL v3.0
 Author Information
 ------------------
 
-Author is Author
+Author is IronTooch

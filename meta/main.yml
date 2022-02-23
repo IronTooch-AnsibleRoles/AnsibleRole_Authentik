@@ -2,7 +2,7 @@ galaxy_info:
   role_name: authentik
   namespace: irontooch
   author: IronTooch
-  description: A role to install the Authentik LDAP Service for Authentication and Authorization
+  description: A role to install the Authentik Service for Authentication and Authorization (Developed by https://goauthentik.io/)
   license: GPL-3.0-only
   min_ansible_version: 2.1
 

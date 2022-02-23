@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cp {{ my_app_inital_cert_location }}/{{ external_domain }}.crt {{ my_app_certificate_path }}
+cp {{ my_app_inital_cert_location }}/{{ external_domain }}.key {{ my_app_key_path }}
+chmod 0640 {{ my_app_certificate_path }}
+chmod 0640 {{ my_app_key_path }}
+chown {{ my_app_service_user }}:{{ my_app_service_user }} {{ my_app_certificate_path }}
+chown {{ my_app_service_user }}:{{ my_app_service_user }} {{ my_app_key_path }}

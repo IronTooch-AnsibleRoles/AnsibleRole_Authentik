@@ -1,0 +1,14 @@
+#
+# Note: After making changes to this file you need to run the `rebuild` or `update`
+# command for them to be applied.
+
+url: https://{{ my_app_external_domain }}
+http_port: 80
+https_port: 443
+ssl_certificate_path: {{ my_app_certificate_path }}
+ssl_key_path: {{ my_app_key_path }}}
+
+yaml_list:
+{% for internal_yaml_item in my_app_list_data %}
+  - {{ internal_yaml_item }}
+{% endfor %}

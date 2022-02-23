@@ -1,0 +1,27 @@
+---
+argument_specs:
+  main:
+    short_description: This role is designed to EXPLANATION.
+    description: |
+      Line 1.
+      Line 2.
+    options:
+      var1:
+        type: "str"
+        required: true
+        description: "Description_for_var_1"
+
+      var2:
+        type: "str"
+        required: true
+        description: "Description_for_var_12"
+
+      var3:
+        type: "str"
+        required: true
+        description: "Description_for_var_3"
+
+      var4:
+        type: "str"
+        required: true
+        description: "Description_for_var_4"

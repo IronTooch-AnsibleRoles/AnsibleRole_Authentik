@@ -1,0 +1,68 @@
+---
+- name: Template out my_app Service
+  ansible.builtin.template:
+    src: my_app.service.j2
+    dest: "/etc/systemd/system/my_app.service"
+    force: true
+    mode: '0644'  # Ansible-Lint hates when this isn't set
+
+- name: Add overwrite_certs.sh
+  ansible.builtin.template:
+    src: overwrite_certs.sh.j2
+    dest: "{{ my_app_dir }}/overwrite_certs.sh"
+    force: true
+    mode: '0700'  # Ansible-Lint hates when this isn't set
+    owner: "{{ my_app_service_user }}"
+    group: "{{ my_app_service_user }}"
+
+- name: Copy initial cert to appropriate directory
+  ansible.builtin.copy:
+    src: "{{ my_app_inital_cert_location }}/{{ my_app_external_domain }}.crt"
+    dest: "{{ my_app_certificate_path }}"
+    remote_src: true
+    force: true
+    owner: "{{ my_app_service_user }}"
+    group: "{{ my_app_service_user }}"
+    mode: "0700"
+
+- name: Copy initial key to appropriate directory
+  ansible.builtin.copy:
+    src: "{{ my_app_inital_cert_location }}/{{ my_app_external_domain }}.key"
+    dest: "{{ my_app_key_path }}"
+    remote_src: true
+    force: true
+    owner: "{{ my_app_service_user }}"
+    group: "{{ my_app_service_user }}"
+    mode: "0700"
+
+- name: Make override directory
+  ansible.builtin.file:
+    path: "{{ my_app_cert_renewer_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Deploy my_app override
+  ansible.builtin.template:
+    src: cert-renewer.my_app.override.j2
+    dest: "{{ cert_renewer_path }}/override.conf"
+    force: true
+    mode: '0770'  # Ansible-Lint hates when this isn't set
+
+- name: Do post configuration activities for my_app
+  become_user: "{{ my_app_service_user }}"
+  ansible.builtin.command:
+    cmd: "{{ my_app_post_config_command }}"
+    chdir: "{{ my_app_dir }}"
+  changed_when: false
+
+- name: Ensure cert-renewer@bitwarden.timer is started
+  ansible.builtin.service:
+    name: "{{ my_app_cert_timer }}"
+    state: started
+    enabled: true
+
+- name: Ensure my_app is restarted
+  ansible.builtin.service:
+    name: "{{ my_app_name }}"
+    state: restarted
+    enabled: true

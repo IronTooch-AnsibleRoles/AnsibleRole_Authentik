@@ -1,0 +1,28 @@
+---
+- name: Create my_app directory
+  ansible.builtin.file:
+    path: "{{ my_app_dir }}"
+    state: directory
+    owner: "{{ my_app_service_user }}"
+    group: "{{ my_app_service_user }}"
+    mode: '700'
+
+- name: Get Installer
+  ansible.builtin.get_url:
+    url: "{{ my_app_url }}"
+    dest: "{{ my_app_dir }}/{{ my_app_install_program }}"
+    force: true
+    owner: "{{ my_app_service_user }}"
+    group: "{{ my_app_service_user }}"
+    mode: "0700"
+    validate_certs: "true"
+
+- name: Install my_app
+  become_user: "{{ my_app_service_user }}"
+  ansible.builtin.expect:
+    command: "{{ my_app_install_command }}"
+    chdir: "{{ my_app_dir }}"
+    creates: "{{ my_app_install_artifact }}"
+    responses:
+      Question 1 String: "{{ external_domain }}"
+      Question 2 String: "n"

@@ -1,0 +1,8 @@
+---
+- name: Install Dependency packages
+  package:
+    name:
+      - acl
+      - sudo
+      - python3-pexpect
+    state: present

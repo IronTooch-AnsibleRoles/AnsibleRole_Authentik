@@ -1,0 +1,15 @@
+---
+- name: Make group for {{ my_app_service_user }}
+  ansible.builtin.group:
+    name: "{{ my_app_service_user }}"
+    state: present
+    system: true
+
+- name: Make service user for {{ my_app_service_user }}
+  ansible.builtin.user:
+    name: "{{ my_app_service_user }}"
+    state: present
+    create_home: true
+    groups: "{{ my_app_service_user }}"
+    system: true
+    shell: /bin/bash

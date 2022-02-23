@@ -1,0 +1,18 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Deploy Synapse",
+            "detail": "Runs the Role",
+            "type": "shell",
+            "command": "/usr/local/bin/ansible-playbook ./tests/test.yml -i TEST_SERVER_IP, -u TEST_SERVER_USER",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": [
+                "$lessc"
+            ]
+        }
+    ]
+}

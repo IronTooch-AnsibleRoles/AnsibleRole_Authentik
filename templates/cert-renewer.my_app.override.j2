@@ -1,0 +1,9 @@
+[Service]
+ExecStartPost=cp {{ my_app_initial_certificate_path }} {{ my_app_certificate_path }}
+ExecStartPost=cp {{ my_app_initial_key_path }} {{ my_app_key_path }}
+ExecStartPost=chmod 0640 {{ my_app_certificate_path }}
+ExecStartPost=chmod 0640 {{ my_app_key_path }}
+ExecStartPost=chown {{ service_user }}:{{ service_user }} {{ my_app_certificate_path }}
+ExecStartPost=chown {{ service_user }}:{{ service_user }} {{ my_app_key_path }}
+ExecStartPost={{ my_app_refresh_command }}
+ExecStartPost=/usr/bin/env sh -c "! systemctl --quiet is-enabled %i.service || systemctl try-reload-or-restart %i"

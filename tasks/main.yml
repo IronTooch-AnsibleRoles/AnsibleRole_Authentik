@@ -16,10 +16,6 @@
   ansible.builtin.include_tasks:
     file: "04_install_app.yml"
 
-- name: Deploy Services and Handle SSL
-  ansible.builtin.include_tasks:
-    file: "05_deploy_services.yml"
-
 - name: Print completion message
   ansible.builtin.debug:
     msg:

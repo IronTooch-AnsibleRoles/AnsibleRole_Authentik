@@ -1,9 +1,0 @@
-cp -f {{ smallstep_web_certificate_path }} {{ authentik_web_certificate_path }}
-cp -f {{ smallstep_web_key_path }} {{ authentik_web_key_path }}
-chmod 666 {{ authentik_web_certificate_path }}
-chmod 666 {{ authentik_web_key_path }}
-
-cp -f {{ smallstep_ldap_key_path }} {{ smallstep_ldap_key_path }}
-cp -f {{ smallstep_ldap_key_path }} {{ smallstep_ldap_key_path }}
-chmod 666 {{ authentik_ldap_certificate_path }}
-chmod 666 {{ authentik_ldap_key_path }}

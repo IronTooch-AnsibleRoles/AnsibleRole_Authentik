@@ -17,23 +17,3 @@ authentik_admin_user_email: "authentik_admin@example.com"
 # Items for provisioning the Service
 authentik_dependent_service: "docker"
 authentik_external_domain: "{{ smallstep_subject_names[0] }}"
-
-# Paths for certificate locations
-authetik_use_smallstep: false
-smallstep_inital_cert_location: "/etc/step-ca"
-
-smallstep_web_certificate_path: "{{ smallstep_inital_cert_location }}/{{ authentik_external_domain }}-web.crt"
-smallstep_web_key_path: "{{ smallstep_inital_cert_location }}/{{ authentik_external_domain }}-web.key"
-authentik_web_certificate_path: "{{ authentik_base_directory }}/certs/certificate-web.pem"
-authentik_web_key_path: "{{ authentik_base_directory }}/certs/certificate-web.key"
-
-smallstep_ldap_certificate_path: "{{ smallstep_inital_cert_location }}/{{ authentik_external_domain }}-ldap.crt"
-smallstep_ldap_key_path: "{{ smallstep_inital_cert_location }}/{{ authentik_external_domain }}-ldap.key"
-authentik_ldap_certificate_path: "{{ authentik_base_directory }}/certs/certificate-ldap.pem"
-authentik_ldap_key_path: "{{ authentik_base_directory }}/certs/certificate-ldap.key"
-
-# Locations for services
-authentik_web_cert_renewer_path: "/etc/systemd/system/cert-renewer-web.service"
-authentik_web_cert_timer: cert-renewer@{{ authentik_web_cert_renewer_path | basename | splitext | first }}.timer""
-authentik_ldap_cert_renewer_path: "/etc/systemd/system/cert-renewer-ldap.service"
-authentik_ldap_cert_timer: cert-renewer@{{ authentik_ldap_cert_renewer_path  | basename | splitext | first }}.timer""

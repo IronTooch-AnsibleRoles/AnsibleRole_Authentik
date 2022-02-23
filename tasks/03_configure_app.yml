@@ -8,21 +8,3 @@
     group: "{{ authentik_service_user }}"
   loop:
     - "{{ authentik_base_directory }}"
-
-# Make Web Certificate
-- name: Deploy Smallstep certificate
-  ansible.builtin.import_role:
-    name: "../../AnsibleCollections/irontooch/homelab/roles/pk_stepcli"
-    allow_duplicates: true
-  vars:
-    smallstep_certificate_name: "{{ smallstep_web_certificate_path | basename | splitext | first }}"
-  when: authetik_use_smallstep
-
-# Make LDAP Certificate
-- name: Deploy Smallstep certificate
-  ansible.builtin.import_role:
-    name: "../../AnsibleCollections/irontooch/homelab/roles/pk_stepcli"
-    allow_duplicates: true
-  vars:
-    smallstep_certificate_name: "{{ smallstep_ldap_certificate_path | basename | splitext | first }}"
-  when: authetik_use_smallstep

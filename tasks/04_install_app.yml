@@ -4,7 +4,7 @@
     src: .env.j2
     dest: "{{ authentik_base_directory }}/.env"
     force: true
-    mode: '0770'  # Ansible-Lint hates when this isn't set
+    mode: '0770'
     owner: "{{ authentik_service_user }}"
     group: "{{ authentik_service_user }}"
 
@@ -13,7 +13,7 @@
     src: docker-compose.yml.j2
     dest: "{{ authentik_base_directory }}/docker-compose.yml"
     force: true
-    mode: '0770'  # Ansible-Lint hates when this isn't set
+    mode: '0770'
     owner: "{{ authentik_service_user }}"
     group: "{{ authentik_service_user }}"
 

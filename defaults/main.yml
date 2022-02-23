@@ -1,47 +1,39 @@
 ---
 # Items for Default Installation
-my_app_name: "my_app"
-my_app_version: "1.2.3"
-my_app_url: ""
-my_app_osver: "focal"
-my_app_ppa_repo: "ppa:{{ my_app_name }}/{{ my_app_version }}"
-my_app_deb_repo: "deb {{my_app_url}}{{ cal_node_ver }} {{ my_app_osver }} main"
-my_app_gpg_key: "http://path_to_key"
-my_app_keyring_root: "/usr/share/keyrings"
-my_app_gpg_keyring: "{{ my_app_name }}_keyring"
-my_app_sources_listname: "{{ my_app_name }}.list"
-my_app_sources_file: "/etc/apt/sources.list.d/{{ my_app_sources_listname }}"
+authentik_service_user: authentik_user
+authentik_base_directory: /opt/authentik
+authentik_pgpass: "{{ lookup('community.general.random_string', length=40, special=false) }}"
+authentik_secret_key: "{{ lookup('community.general.random_string', length=50, special=false) }}"
 
+# Items for SMTP
+authentik_smtp_host: "smtp.gmail.com"
+authentik_smtp_port: "587"
+authentik_smtp_ssl: "false"
+authentik_smtp_tls: "true"
+authentik_smtp_username: "my_user@gmail.com"
+authentik_smtp_password: "my_password"
+authentik_admin_user_email: "authentik_admin@example.com"
 
-# Items for running the application
-my_app_service_user: "{{ my_app_name }}_user"
-my_app_dir: "/opt/{{ my_app_name }}"
+# Items for provisioning the Service
+authentik_dependent_service: "docker"
+authentik_external_domain: "{{ smallstep_subject_names[0] }}"
 
-# Variables for configurating the application
-my_app_install_program: "./install.sh"
-my_app_refresh_command: "{{ my_app_dir }}/refresh.sh"
-my_app_install_command: "./{{ my_app_install_program }} my_option"
-my_app_install_artifact: "my_post_install_artifact"
-my_app_installed_config_file: "my_app_config_file"
-my_app_deployed_config_file: "my_app_config_file"
-my_app_post_config_command: "./rebuild.sh"
+# Paths for certificate locations
+authetik_use_smallstep: false
+smallstep_inital_cert_location: "/etc/step-ca"
 
-# Itemms for deploying the service for the role
-my_app_start_command: "{{ my_app_dir }}/my_app.sh start"
-my_app_stop_command: "{{ my_app_dir }}/my_app.sh start"
+smallstep_web_certificate_path: "{{ smallstep_inital_cert_location }}/{{ authentik_external_domain }}-web.crt"
+smallstep_web_key_path: "{{ smallstep_inital_cert_location }}/{{ authentik_external_domain }}-web.key"
+authentik_web_certificate_path: "{{ authentik_base_directory }}/certs/certificate-web.pem"
+authentik_web_key_path: "{{ authentik_base_directory }}/certs/certificate-web.key"
 
-# Items for managing a Self-Hosted Certificate
-my_app_inital_cert_location: "/etc/step-ca"
-my_app_dependent_service: ""
-my_app_external_domain: "my_app.example.com"
-my_app_initial_certificate_path: "{{ my_app_inital_cert_location }}/{{ external_domain }}.crt"
-my_app_initial_key_path: "{{ my_app_inital_cert_location }}/{{ external_domain }}.key"
-my_app_certificate_path: "/etc/my_app/certificate.crt"
-my_app_key_path: "/etc/my_app/certificate.key"
-my_app_cert_renewer_path: "/etc/systemd/system/cert-renewer@{{ my_app_dependent_service }}.service.d"
-my_app_cert_timer: cert-renewer@{{ my_app_dependent_service }}.timer""
+smallstep_ldap_certificate_path: "{{ smallstep_inital_cert_location }}/{{ authentik_external_domain }}-ldap.crt"
+smallstep_ldap_key_path: "{{ smallstep_inital_cert_location }}/{{ authentik_external_domain }}-ldap.key"
+authentik_ldap_certificate_path: "{{ authentik_base_directory }}/certs/certificate-ldap.pem"
+authentik_ldap_key_path: "{{ authentik_base_directory }}/certs/certificate-ldap.key"
 
-# Other App Settings
-my_app_list_data:
-  - 11.22.33.44
-  - 55.66.77.88
+# Locations for services
+authentik_web_cert_renewer_path: "/etc/systemd/system/cert-renewer-web.service"
+authentik_web_cert_timer: cert-renewer@{{ authentik_web_cert_renewer_path | basename | splitext | first }}.timer""
+authentik_ldap_cert_renewer_path: "/etc/systemd/system/cert-renewer-ldap.service"
+authentik_ldap_cert_timer: cert-renewer@{{ authentik_ldap_cert_renewer_path  | basename | splitext | first }}.timer""

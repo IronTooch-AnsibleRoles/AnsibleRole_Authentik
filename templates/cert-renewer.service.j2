@@ -1,5 +1,5 @@
 [Unit]
-Description=Certificate renewer for %I
+Description=Certificate renewer for {{ auth_cert_service }}
 After=network-online.target
 Documentation=https://smallstep.com/docs/step-ca/certificate-authority-server-production
 StartLimitIntervalSec=0
@@ -9,8 +9,8 @@ Type=oneshot
 User=root
 
 Environment=STEPPATH=/etc/step-ca \
-            CERT_LOCATION={{ certificate_full_path }} \
-            KEY_LOCATION={{ key_full_path }}
+            CERT_LOCATION={{ smallstep_certificate_full_path }} \
+            KEY_LOCATION={{ smallstep_key_full_path }}
 
 ; ExecCondition checks if the certificate is ready for renewal,
 ; based on the exit status of the command.
@@ -20,10 +20,12 @@ ExecCondition=/usr/bin/step certificate needs-renewal ${CERT_LOCATION}
 ; ExecStart renews the certificate, if ExecStartPre was successful.
 ExecStart=/usr/bin/step ca renew --force ${CERT_LOCATION} ${KEY_LOCATION}
 
-; Try to reload or restart the systemd service that relies on this cert-renewer
-; If the relying service doesn't exist, forge ahead.
-; (In systemd <229, use `reload-or-try-restart` instead of `try-reload-or-restart`)
-ExecStartPost=/usr/bin/env sh -c "! systemctl --quiet is-enabled %i.service || systemctl try-reload-or-restart %i"
+ExecStartPost=cp -f {{ smallstep_certificate_full_path }} {{ authentik_certificate_full_path }}
+ExecStartPost=cp -f {{ smallstep_key_full_path }} {{ authentik_key_full_path }}
+ExecStartPost=chmod 666 {{ authentik_certificate_full_path }}
+ExecStartPost=chmod 666 {{ authentik_key_full_path }}
+
+ExecStartPost=/usr/bin/env sh -c "! systemctl --quiet is-enabled {{ authentik_dependent_service }}.service || systemctl try-reload-or-restart {{ authentik_dependent_service }}"
 
 [Install]
 WantedBy=multi-user.target

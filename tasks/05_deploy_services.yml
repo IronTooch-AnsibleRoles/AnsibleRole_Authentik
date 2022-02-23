@@ -1,68 +1,64 @@
 ---
-- name: Template out my_app Service
-  ansible.builtin.template:
-    src: my_app.service.j2
-    dest: "/etc/systemd/system/my_app.service"
-    force: true
-    mode: '0644'  # Ansible-Lint hates when this isn't set
 
-- name: Add overwrite_certs.sh
-  ansible.builtin.template:
-    src: overwrite_certs.sh.j2
-    dest: "{{ my_app_dir }}/overwrite_certs.sh"
-    force: true
-    mode: '0700'  # Ansible-Lint hates when this isn't set
-    owner: "{{ my_app_service_user }}"
-    group: "{{ my_app_service_user }}"
+- name: Deploy Self-hosted CA Mechanism with Smallstep CA
+  block:
+    - name: Deploy Web Cert Renewer Template
+      ansible.builtin.template:
+        src: cert-renewer.service.j2
+        dest: "{{ authentik_web_cert_renewer_path }}"
+        force: true
+        mode: '0770'
+      vars:
+        auth_cert_service: "Authentik Website"
+        smallstep_certificate_full_path: "{{ smallstep_web_certificate_path }}"
+        smallstep_key_full_path: "{{ smallstep_web_key_path }}"
+        authentik_certificate_full_path: "{{ authentik_web_certificate_path }}"
+        authentik_key_full_path: "{{ authentik_web_key_path }}"
 
-- name: Copy initial cert to appropriate directory
-  ansible.builtin.copy:
-    src: "{{ my_app_inital_cert_location }}/{{ my_app_external_domain }}.crt"
-    dest: "{{ my_app_certificate_path }}"
-    remote_src: true
-    force: true
-    owner: "{{ my_app_service_user }}"
-    group: "{{ my_app_service_user }}"
-    mode: "0700"
+    - name: Deploy LDAP Cert Renewer Template
+      ansible.builtin.template:
+        src: cert-renewer.service.j2
+        dest: "{{ authentik_ldap_cert_renewer_path }}"
+        force: true
+        mode: '0770'
+      vars:
+        auth_cert_service: "LDAP Certificate"
+        smallstep_certificate_full_path: "{{ smallstep_ldap_certificate_path }}"
+        smallstep_key_full_path: "{{ smallstep_ldap_key_path }}"
+        authentik_certificate_full_path: "{{ authentik_ldap_certificate_path }}"
+        authentik_key_full_path: "{{ authentik_ldap_key_path }}"
 
-- name: Copy initial key to appropriate directory
-  ansible.builtin.copy:
-    src: "{{ my_app_inital_cert_location }}/{{ my_app_external_domain }}.key"
-    dest: "{{ my_app_key_path }}"
-    remote_src: true
-    force: true
-    owner: "{{ my_app_service_user }}"
-    group: "{{ my_app_service_user }}"
-    mode: "0700"
+    - name: Deploy Renewer Templates
+      ansible.builtin.template:
+        src: cert-timer.service.j2
+        dest: "{{ authentik_web_cert_timer }}"
+        force: true
+        mode: '0770'
 
-- name: Make override directory
-  ansible.builtin.file:
-    path: "{{ my_app_cert_renewer_path }}"
-    state: directory
-    mode: '0755'
+    - name: Deploy Renewer Templates
+      ansible.builtin.template:
+        src: cert-timer.service.j2
+        dest: "{{ authentik_ldap_cert_timer }}"
+        force: true
+        mode: '0770'
 
-- name: Deploy my_app override
-  ansible.builtin.template:
-    src: cert-renewer.my_app.override.j2
-    dest: "{{ cert_renewer_path }}/override.conf"
-    force: true
-    mode: '0770'  # Ansible-Lint hates when this isn't set
+    - name: Template out Overwrite_certs
+      ansible.builtin.template:
+        src: overwrite_certs.sh.j2
+        dest: "{{ smallstep_inital_cert_location }}/overwrite_certs.sh"
+        force: true
+        mode: '0770'
 
-- name: Do post configuration activities for my_app
-  become_user: "{{ my_app_service_user }}"
-  ansible.builtin.command:
-    cmd: "{{ my_app_post_config_command }}"
-    chdir: "{{ my_app_dir }}"
-  changed_when: false
+    - name: Ensure {{ authentik_web_cert_timer }} is started
+      ansible.builtin.service:
+        name: "{{ authentik_web_cert_timer }}"
+        state: started
+        enabled: true
 
-- name: Ensure cert-renewer@bitwarden.timer is started
-  ansible.builtin.service:
-    name: "{{ my_app_cert_timer }}"
-    state: started
-    enabled: true
+    - name: Ensure {{ authentik_ldap_cert_timer }} is started
+      ansible.builtin.service:
+        name: "{{ authentik_ldap_cert_timer }}"
+        state: started
+        enabled: true
 
-- name: Ensure my_app is restarted
-  ansible.builtin.service:
-    name: "{{ my_app_name }}"
-    state: restarted
-    enabled: true
+  when: authentik_use_smallstep

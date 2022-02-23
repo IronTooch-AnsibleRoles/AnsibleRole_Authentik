@@ -13,7 +13,3 @@ authentik_smtp_tls: "true"
 authentik_smtp_username: "my_user@gmail.com"
 authentik_smtp_password: "my_password"
 authentik_admin_user_email: "authentik_admin@example.com"
-
-# Items for provisioning the Service
-authentik_dependent_service: "docker"
-authentik_external_domain: "{{ smallstep_subject_names[0] }}"

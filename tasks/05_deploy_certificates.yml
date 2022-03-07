@@ -1,0 +1,65 @@
+---
+- name: Deploy baseline Authentik Certificate
+  ansible.builtin.include_role:
+    name: irontooch.smallstep_leafclient
+    allow_duplicates: true
+    public: true
+  vars:
+    smallstep_postrenewal_cert_path: "{{ authentik_base_directory }}/certs/{{ smallstep_certificate_name }}.crt"
+    smallstep_postrenewal_cert_owner: "{{ smallstep_docker_user }}"
+    smallstep_postrenewal_key_path: "{{ authentik_base_directory }}/certs/{{ smallstep_certificate_name }}.key"
+    smallstep_postrenewal_key_owner: "{{ smallstep_docker_user }}"
+    smallstep_services_to_restart:
+      - docker
+
+- name: Deploy Web Authentik Certificate
+  ansible.builtin.include_role:
+    name: irontooch.smallstep_leafclient
+    allow_duplicates: true
+    public: true
+  vars:
+    smallstep_postrenewal_cert_path: "{{ authentik_base_directory }}/certs/{{ smallstep_certificate_name }}-web.crt"
+    smallstep_postrenewal_cert_owner: "{{ smallstep_docker_user }}"
+    smallstep_postrenewal_key_path: "{{ authentik_base_directory }}/certs/{{ smallstep_certificate_name }}-web.key"
+    smallstep_postrenewal_key_owner: "{{ smallstep_docker_user }}"
+    smallstep_services_to_restart:
+      - docker
+
+- name: Deploy LDAP Authentik Certificate
+  ansible.builtin.include_role:
+    name: irontooch.smallstep_leafclient
+    allow_duplicates: true
+    public: true
+  vars:
+    smallstep_postrenewal_cert_path: "{{ authentik_base_directory }}/certs/{{ smallstep_certificate_name }}-ldap.crt"
+    smallstep_postrenewal_cert_owner: "{{ smallstep_docker_user }}"
+    smallstep_postrenewal_key_path: "{{ authentik_base_directory }}/certs/{{ smallstep_certificate_name }}-ldap.key"
+    smallstep_postrenewal_key_owner: "{{ smallstep_docker_user }}"
+    smallstep_services_to_restart:
+      - docker
+
+- name: Deploy OpenID Authentik Certificate
+  ansible.builtin.include_role:
+    name: irontooch.smallstep_leafclient
+    allow_duplicates: true
+    public: true
+  vars:
+    smallstep_postrenewal_cert_path: "{{ authentik_base_directory }}/certs/{{ smallstep_certificate_name }}-openid.crt"
+    smallstep_postrenewal_cert_owner: "{{ smallstep_docker_user }}"
+    smallstep_postrenewal_key_path: "{{ authentik_base_directory }}/certs/{{ smallstep_certificate_name }}-openid.key"
+    smallstep_postrenewal_key_owner: "{{ smallstep_docker_user }}"
+    smallstep_services_to_restart:
+      - docker
+
+- name: Deploy Web Authentik Certificate
+  ansible.builtin.include_role:
+    name: irontooch.smallstep_leafclient
+    allow_duplicates: true
+    public: true
+  vars:
+    smallstep_postrenewal_cert_path: "{{ authentik_base_directory }}/certs/{{ smallstep_certificate_name }}-proxy.crt"
+    smallstep_postrenewal_cert_owner: "{{ smallstep_docker_user }}"
+    smallstep_postrenewal_key_path: "{{ authentik_base_directory }}/certs/{{ smallstep_certificate_name }}-proxy.key"
+    smallstep_postrenewal_key_owner: "{{ smallstep_docker_user }}"
+    smallstep_services_to_restart:
+      - docker

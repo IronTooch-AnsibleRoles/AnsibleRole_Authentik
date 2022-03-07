@@ -16,6 +16,11 @@
   ansible.builtin.include_tasks:
     file: "04_install_app.yml"
 
+- name: Deploy Authentik Certificates with SmallStep CA
+  ansible.builtin.include_tasks:
+    file: "05_deploy_certificates.yml"
+  when: authentik_use_smallstep
+
 - name: Print completion message
   ansible.builtin.debug:
     msg:

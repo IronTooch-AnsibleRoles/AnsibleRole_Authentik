@@ -13,3 +13,13 @@ authentik_smtp_tls: "true"
 authentik_smtp_username: "my_user@gmail.com"
 authentik_smtp_password: "my_password"
 authentik_admin_user_email: "authentik_admin@example.com"
+
+# To use Authentik, the following variables need to be defined:
+authentik_use_smallstep: false
+# smallstep_docker_user
+
+# smallstep_top_level_domain:
+# smallstep_ca_url:
+# smallstep_ca_footprint:
+# smallstep_provisioner_password:
+
